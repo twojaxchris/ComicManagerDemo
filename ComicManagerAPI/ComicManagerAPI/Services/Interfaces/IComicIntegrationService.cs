@@ -1,4 +1,5 @@
-﻿using ComicManagerAPI.Models.ComicVine.Issue;
+﻿using ComicManagerAPI.Models;
+using ComicManagerAPI.Models.ComicVine.Issue;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,6 @@ namespace ComicManagerAPI.Services.Interfaces
 {
     public interface IComicIntegrationService
     {
-        Task<List<IssueResult>> SearchIssues(string name, int issue_number);
+        Task<List<Comic>> SearchIssues(string name, int issue_number);
     }
 }

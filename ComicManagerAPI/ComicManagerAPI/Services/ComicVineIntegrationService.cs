@@ -1,4 +1,5 @@
-﻿using ComicManagerAPI.Models.ComicVine;
+﻿using ComicManagerAPI.Models;
+using ComicManagerAPI.Models.ComicVine;
 using ComicManagerAPI.Models.ComicVine.Issue;
 using ComicManagerAPI.Services.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -27,12 +28,8 @@ namespace ComicManagerAPI.Services
             _logger = logger;
             GetAPIKey();
         }
-
-        /// <summary>
-        /// Pull a list of the top issues
-        /// </summary>
-        /// <returns></returns>
-        public async Task<List<IssueResult>> SearchIssues(string name, int issue_number)
+        
+        public async Task<List<Comic>> SearchIssues(string name, int issue_number)
         {
             string issueURL = $"issues/?api_key={ _key}&format=json";
             string filterUrl = CreateIssueFilterUrl(name, issue_number);
@@ -40,15 +37,14 @@ namespace ComicManagerAPI.Services
 
             string response = await CallComicVineAPI(finalUrl);
             var rootResult = JsonConvert.DeserializeObject<IssueResponse>(response);
-            return rootResult.results;
+
+            return CreateComicObjectsFromIssueResults(rootResult.results);
         }
 
-        #region Private
 
-        /// <summary>
-        /// This is just a simple location for the API Key. May refactor this later,
-        /// but since I'm in a bit of a hurry I am going to do this for now
-        /// </summary>
+        #region Private
+        
+        //Refactor this later. This is just a quick and dirty way to keep the key off git
         private void GetAPIKey()
         {
             string savedKey = null;
@@ -72,13 +68,19 @@ namespace ComicManagerAPI.Services
         private string CreateIssueFilterUrl(string name, int issue_number)
         {
             string filterString = "&filter=";
-            string nameFilter = String.IsNullOrEmpty(name) ? $"Name:{name}" : String.Empty;
-            string issueNumString = (issue_number > 0) ? $"issue_number:{issue_number.ToString()}" : String.Empty;
+            string nameFilter = !String.IsNullOrEmpty(name) 
+                                        ? $"name:{name}" 
+                                        : String.Empty;
+            string issueNumString = (issue_number > 0) 
+                                        ? $"issue_number:{issue_number.ToString()}" 
+                                        : String.Empty;
 
-            string filterUrl = String.IsNullOrEmpty(name)
-                                ? filterString + nameFilter + "," : filterString;
-            filterUrl = String.IsNullOrEmpty(issueNumString)
-                                ? filterUrl + issue_number : String.Empty;
+            string filterUrl = !String.IsNullOrEmpty(nameFilter)
+                                ? filterString + nameFilter + "," 
+                                : filterString;
+            filterUrl = !String.IsNullOrEmpty(issueNumString)
+                                ? filterUrl + issueNumString
+                                : filterUrl.Remove(filterUrl.Length -1); //remove the comma if no issue number
 
             return filterUrl;
         }
@@ -97,6 +99,25 @@ namespace ComicManagerAPI.Services
                 else
                     return null;
             }
+        }
+
+        private List<Comic> CreateComicObjectsFromIssueResults(List<IssueResult> results)
+        {
+            List<Comic> comics = new List<Comic>();
+
+            foreach (IssueResult result in results)
+            {
+                comics.Add(new Comic
+                {
+                    issueNumber = result.issue_number,
+                    coverDate = result.cover_date,
+                    imageURL = result.image.medium_url,
+                    title = result.volume.name,
+                    url = result.volume.site_detail_url
+                });
+            }
+
+            return comics;
         }
 
         #endregion
