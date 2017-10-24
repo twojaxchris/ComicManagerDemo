@@ -67,6 +67,10 @@ namespace ComicManagerAPI.Services
             return CreatePublishersFromPublisherResults(rootResult.results);
         }
 
+
+
+        #region Private
+
         private List<Publisher> CreatePublishersFromPublisherResults(List<PublisherResult> results)
         {
             List<Publisher> publishers = new List<Publisher>();
@@ -82,6 +86,25 @@ namespace ComicManagerAPI.Services
             }
 
             return publishers;
+        }
+
+        private List<Comic> CreateComicObjectsFromIssueResults(List<IssueResult> results)
+        {
+            List<Comic> comics = new List<Comic>();
+
+            foreach (IssueResult result in results)
+            {
+                comics.Add(new Comic
+                {
+                    issueNumber = result.issue_number,
+                    coverDate = result.cover_date,
+                    imageURL = (result.image != null) ? result.image.medium_url : String.Empty,
+                    title = (result.volume != null) ? result.volume.name : String.Empty,
+                    url = (result.volume != null) ? result.volume.site_detail_url : String.Empty
+                });
+            }
+
+            return comics;
         }
 
         private List<Series> CreateSeriesFromSeriesResults(List<SeriesResult> results)
@@ -112,30 +135,6 @@ namespace ComicManagerAPI.Services
                                         : String.Empty;
 
             return nameFilter;
-        }
-
-
-        #region Private
-        
-        //Refactor this later. This is just a quick and dirty way to keep the key off git
-        private void GetAPIKey()
-        {
-            string savedKey = null;
-
-            try
-            {
-                savedKey = System.IO.File.ReadAllText(_apiKeyLocation);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("ComicVineIntegrationService.GetAPIKey: Error opening file to read API Key. Exception: " + e.ToString());
-            }
-            
-            var match = Regex.Match(savedKey, @"[^a-zA-Z\d\s:]");
-            if (!match.Success)
-                _key = savedKey;
-            else
-                throw new Exception("The API Key you are trying to use it malformed and contained unsupported characters. Please check it and try again");
         }
 
         private string CreateFilterFromNameAndIssueNumber(string name, int issue_number)
@@ -174,23 +173,25 @@ namespace ComicManagerAPI.Services
             }
         }
 
-        private List<Comic> CreateComicObjectsFromIssueResults(List<IssueResult> results)
+        //Refactor this later. This is just a quick and dirty way to keep the key off git
+        private void GetAPIKey()
         {
-            List<Comic> comics = new List<Comic>();
+            string savedKey = null;
 
-            foreach (IssueResult result in results)
+            try
             {
-                comics.Add(new Comic
-                {
-                    issueNumber = result.issue_number,
-                    coverDate = result.cover_date,
-                    imageURL = (result.image != null) ? result.image.medium_url : String.Empty,
-                    title = (result.volume != null) ? result.volume.name : String.Empty,
-                    url = (result.volume != null) ? result.volume.site_detail_url : String.Empty
-                });
+                savedKey = System.IO.File.ReadAllText(_apiKeyLocation);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("ComicVineIntegrationService.GetAPIKey: Error opening file to read API Key. Exception: " + e.ToString());
             }
 
-            return comics;
+            var match = Regex.Match(savedKey, @"[^a-zA-Z\d\s:]");
+            if (!match.Success)
+                _key = savedKey;
+            else
+                throw new Exception("The API Key you are trying to use it malformed and contained unsupported characters. Please check it and try again");
         }
 
         #endregion
