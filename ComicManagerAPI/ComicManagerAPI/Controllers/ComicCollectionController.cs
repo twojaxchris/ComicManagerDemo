@@ -21,6 +21,7 @@ namespace ComicManagerAPI.Controllers
             _collectionManagerService = collectionManagerService ?? throw new ArgumentNullException(nameof(collectionManagerService));
         }
 
+        [Route("addcomic")]
         [HttpPost]
         [ProducesResponseType(typeof(List<Comic>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -34,6 +35,7 @@ namespace ComicManagerAPI.Controllers
                 );
         }
 
+        [Route("updatecomic")]
         [HttpPut]
         [ProducesResponseType(typeof(List<Comic>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -43,6 +45,7 @@ namespace ComicManagerAPI.Controllers
             return Ok(revisedCollection);
         }
 
+        [Route("deletecomic")]
         [HttpDelete]
         [ProducesResponseType(typeof(List<Comic>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -50,6 +53,16 @@ namespace ComicManagerAPI.Controllers
         {
             var revisedCollection = _collectionManagerService.RemoveComicFromCollection(comic, username);
             return Ok(revisedCollection);
+        }
+
+        [Route("searchcomics")]
+        [HttpGet("{name}/{issue_number}/{username}")]
+        [ProducesResponseType(typeof(IEnumerable<Comic>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SearchIssues(string name, int issue_number, string username = "Default")
+        {
+            var comics = _collectionManagerService.SearchComicCollection(name, issue_number, username);
+            return Ok(comics);
         }
     }
 }
