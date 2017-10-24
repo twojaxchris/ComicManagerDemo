@@ -27,9 +27,9 @@ namespace ComicManagerAPI.Services
             return _repo.RemoveComicFromCollection(comicToRemove, userName);
         }
 
-        public List<Comic> UpdateComicInCollection(Comic comicToUpdate, string userName = "Default")
+        public List<Comic> UpdateComicInCollection(Comic originalComic, Comic newComic, string userName = "Default")
         {
-            return _repo.UpdateComicInCollection(comicToUpdate, userName);
+            return _repo.UpdateComicInCollection(originalComic, newComic, userName);
         }
 
         public List<Comic> SearchComicCollection(string name, int issue_number, string userName = "Default")

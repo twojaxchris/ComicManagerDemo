@@ -95,7 +95,7 @@ namespace ComicManagerAPI.Services
                     name = result.name,
                     startYear = result.start_year,
                     url = result.site_detail_url,
-                    imageUrl = result.site_detail_url,
+                    imageUrl = (result.image != null) ? result.image.medium_url : String.Empty,
                     publisherName = (result.publisher != null) ? result.publisher.name : String.Empty
                 });
             }
