@@ -12,9 +12,11 @@ namespace ComicManagerAPI.Models
     {
         public ObjectId Id { get; set; }
 
-        [BsonElement("comicID")]
-        [JsonProperty("comicID")]
-        public int comicID { get; set; }
+        //TODO: set auto-incrementing primary key for comics
+
+        //[BsonElement("comicID")]
+        //[JsonProperty("comicID")]
+        //public int comicID { get; set; }
 
         /// <summary>
         /// URL link to view comic details on an external website
