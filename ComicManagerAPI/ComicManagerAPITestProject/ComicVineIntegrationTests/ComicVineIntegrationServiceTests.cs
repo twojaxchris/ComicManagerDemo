@@ -29,20 +29,28 @@ namespace ComicManagerAPITestProject.ComicVineIntegrationTests
             List<Comic> comics = await ServiceToTest.SearchIssues("Batman", 4);
 
             Assert.IsNotNull(comics);
-            Assert.AreEqual(19, comics.Count);
+            Assert.IsTrue(comics.Count >= 19);
+            Assert.IsTrue(comics[0].title.Contains("Batman"));
         }
 
-        private ILogger CreateLogger()
+        [TestMethod]
+        public async Task SearchSeriesTest()
         {
-            var serviceProvider = new ServiceCollection()
-                                        .AddLogging()
-                                        .BuildServiceProvider();
+            List<Series> series = await ServiceToTest.SearchSeries("Batman");
 
-            var factory = serviceProvider.GetService<ILoggerFactory>();
+            Assert.IsNotNull(series);
+            Assert.IsTrue(series.Count >= 9);
+            Assert.IsTrue(series[0].name.Contains("Batman"));
+        }
 
-            var logger = factory.CreateLogger<ComicVineIntegrationService>();
+        [TestMethod]
+        public async Task SearchPublisherTest()
+        {
+            List<Publisher> publishers = await ServiceToTest.SearchPublishers("Marvel");
 
-            return logger;
+            Assert.IsNotNull(publishers);
+            Assert.IsTrue(publishers.Count >= 8);
+            Assert.IsTrue(publishers[0].name.Contains("Marvel"));
         }
     }
 }
