@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ComicManagerAPITestProject.ComicCollectionManagementTests
@@ -15,14 +16,14 @@ namespace ComicManagerAPITestProject.ComicCollectionManagementTests
     public class ComicCollectionManagerServiceTests
     {
         protected readonly ComicCollectionManagerService ServiceToTest;
-        protected ComicCollectionManagerRepository Repo;
+        protected ComicCollectionMongoDBRepository Repo;
         protected Comic NewComic;
         protected Comic UpdateComic;
         protected Comic SearchComic;
 
         public ComicCollectionManagerServiceTests()
         {
-            Repo = new ComicCollectionManagerRepository();
+            Repo = new ComicCollectionMongoDBRepository();
             ServiceToTest = new ComicCollectionManagerService(Repo);
             NewComic = new Comic()
             {
@@ -69,7 +70,7 @@ namespace ComicManagerAPITestProject.ComicCollectionManagementTests
 
             List<Comic> searchResults = ServiceToTest.SearchComicCollection(SearchComic.title, Int32.Parse(SearchComic.issueNumber));
             Assert.IsNotNull(searchResults);
-            Assert.IsTrue(searchResults.Contains(SearchComic));
+            Assert.IsTrue(searchResults.Find(x => x.title == SearchComic.title && x.issueNumber == SearchComic.issueNumber) != null);
         }
 
         [TestMethod]
@@ -94,14 +95,8 @@ namespace ComicManagerAPITestProject.ComicCollectionManagementTests
 
             revisedCollection = ServiceToTest.UpdateComicInCollection(UpdateComic, comicAfterUpdate);
 
-            Comic updatedComic = revisedCollection.Find(x => (x.title == comicAfterUpdate.title) 
-                                                                && (x.issueNumber == comicAfterUpdate.issueNumber));
-            Assert.IsNotNull(updatedComic);
-            updatedComic = null;
-
-            updatedComic = revisedCollection.Find(x => (x.title == "ComicUpdated")
-                                                                && (x.issueNumber == "13"));
-            Assert.IsNull(updatedComic);
+            Assert.IsTrue(revisedCollection.Find(x => x.title == comicAfterUpdate.title
+                                                && x.issueNumber == comicAfterUpdate.issueNumber) != null);
         }
 
         [TestMethod]
