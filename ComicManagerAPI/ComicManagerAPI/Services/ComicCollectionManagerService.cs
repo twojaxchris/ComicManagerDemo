@@ -1,4 +1,5 @@
 ﻿using ComicManagerAPI.Models;
+using ComicManagerAPI.Repositories.Interfaces;
 using ComicManagerAPI.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -9,24 +10,31 @@ namespace ComicManagerAPI.Services
 {
     public class ComicCollectionManagerService : IComicCollectionManagerService
     {
-        public List<Comic> AddComicToCollection(Comic comicToAdd)
+        IComicCollectionManagerRepository _repo;
+
+        public ComicCollectionManagerService(IComicCollectionManagerRepository repo)
         {
-            throw new NotImplementedException();
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-        public List<Comic> RemoveComicFromCollection(Comic comicToRemove)
+        public List<Comic> AddComicToCollection(Comic comicToAdd, string userName = "Default")
         {
-            throw new NotImplementedException();
+            return _repo.AddComicToCollection(comicToAdd, userName);
         }
 
-        public List<Comic> UpdateComicInCollection(Comic comicToRemove)
+        public List<Comic> RemoveComicFromCollection(Comic comicToRemove, string userName = "Default")
         {
-            throw new NotImplementedException();
+            return _repo.RemoveComicFromCollection(comicToRemove, userName);
         }
 
-        public List<Comic> SearchComicCollection(string name, int issue_number)
+        public List<Comic> UpdateComicInCollection(Comic comicToUpdate, string userName = "Default")
         {
-            throw new NotImplementedException();
+            return _repo.UpdateComicInCollection(comicToUpdate, userName);
+        }
+
+        public List<Comic> SearchComicCollection(string name, int issue_number, string userName = "Default")
+        {
+            return _repo.SearchComicCollection(name, issue_number, userName);
         }
     }
 }
