@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using ComicManagerAPI.Models;
 using Microsoft.AspNetCore.Http;
 using ComicManagerAPI.Services.Interfaces;
+using System.Net;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,41 +26,56 @@ namespace ComicManagerAPI.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(List<Comic>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult AddComic([FromBody]Comic comic, [FromBody]string username)
+        public IActionResult AddComic([FromBody]PostBody post)
         {
-            var revisedCollection = _collectionManagerService.AddComicToCollection(comic, username);
-            return CreatedAtAction
-                (
-                    nameof(AddComic),
-                    revisedCollection
-                );
+            if (post != null)
+            {
+                var revisedCollection = _collectionManagerService.AddComicToCollection(post.comic, post.userName);
+                return CreatedAtAction
+                    (
+                        nameof(AddComic),
+                        revisedCollection
+                    );
+            }
+            else
+                return BadRequest();
         }
 
         [Route("updatecomic")]
         [HttpPut]
         [ProducesResponseType(typeof(List<Comic>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult UpdateComic([FromBody]Comic originalcomic, [FromBody]Comic revisedComic, [FromBody]string username)
+        public IActionResult UpdateComic([FromBody]PostBody post)
         {
-            var revisedCollection = _collectionManagerService.UpdateComicInCollection(originalcomic, revisedComic, username);
-            return Ok(revisedCollection);
+            if (post != null)
+            {
+                var revisedCollection = _collectionManagerService.UpdateComicInCollection(post.comic, post.updatedComic, post.userName);
+                return Ok(revisedCollection);
+            }
+            else
+                return BadRequest();
         }
 
         [Route("deletecomic")]
         [HttpDelete]
         [ProducesResponseType(typeof(List<Comic>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteComic([FromBody]Comic comic, [FromBody]string username)
+        public IActionResult DeleteComic([FromBody]PostBody post)
         {
-            var revisedCollection = _collectionManagerService.RemoveComicFromCollection(comic, username);
-            return Ok(revisedCollection);
+            if (post != null)
+            {
+                var revisedCollection = _collectionManagerService.RemoveComicFromCollection(post.comic, post.userName);
+                return Ok(revisedCollection);
+            }
+            else
+                return BadRequest();
         }
 
         [Route("searchcomics")]
         [HttpGet("{name}/{issue_number}/{username}")]
         [ProducesResponseType(typeof(IEnumerable<Comic>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> SearchIssues(string name, int issue_number, string username = "Default")
+        public async Task<IActionResult> SearchComic(string name, int issue_number, string username)
         {
             var comics = _collectionManagerService.SearchComicCollection(name, issue_number, username);
             return Ok(comics);
