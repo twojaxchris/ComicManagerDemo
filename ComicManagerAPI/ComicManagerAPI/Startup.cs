@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ComicManagerAPI.Services.Interfaces;
 using ComicManagerAPI.Services;
+using ComicManagerAPI.Repositories.Interfaces;
+using ComicManagerAPI.Repositories;
 
 namespace ComicManagerAPI
 {
@@ -26,6 +28,8 @@ namespace ComicManagerAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IComicIntegrationService, ComicVineIntegrationService>();
+            services.AddSingleton<IComicCollectionManagerService, ComicCollectionManagerService>();
+            services.AddSingleton<IComicCollectionManagerRepository, ComicCollectionManagerRepository>();
             services.AddMvc();
         }
 
