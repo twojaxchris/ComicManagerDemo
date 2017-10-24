@@ -27,7 +27,7 @@ namespace ComicManagerAPI.Models.ComicVine.Series
         public int status_code { get; set; }
 
         [JsonProperty("results")]
-        public IList<SeriesResult> results { get; set; }
+        public List<SeriesResult> results { get; set; }
 
         [JsonProperty("version")]
         public string version { get; set; }
