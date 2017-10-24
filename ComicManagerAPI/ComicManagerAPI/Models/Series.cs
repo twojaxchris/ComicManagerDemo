@@ -10,26 +10,26 @@ namespace ComicManagerAPI.Models
         /// <summary>
         /// The name of the series
         /// </summary>
-        string name;
+        public string name;
 
         /// <summary>
         /// The year the series began
         /// </summary>
-        string startYear;
+        public string startYear;
 
         /// <summary>
         /// URL for the image for the series; often the first comic
         /// </summary>
-        string imageUrl;
+        public string imageUrl;
 
         /// <summary>
         /// External site for more information about the series
         /// </summary>
-        string url;
+        public string url;
 
         /// <summary>
         /// The name of the publisher
         /// </summary>
-        string publisherName;
+        public string publisherName;
     }
 }

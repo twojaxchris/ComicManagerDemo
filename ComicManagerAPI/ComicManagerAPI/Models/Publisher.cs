@@ -10,16 +10,16 @@ namespace ComicManagerAPI.Models
         /// <summary>
         /// The name of the company
         /// </summary>
-        string name;
+        public string name;
 
         /// <summary>
         /// A link to an external site with more details about the publisher
         /// </summary>
-        string url;
+        public string url;
 
         /// <summary>
         /// A link to an external site image for the publisher
         /// </summary>
-        string imageUrl;
+        public string imageUrl;
     }
 }
