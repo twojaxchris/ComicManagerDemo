@@ -29,7 +29,7 @@ namespace ComicManagerAPI
         {
             services.AddSingleton<IComicIntegrationService, ComicVineIntegrationService>();
             services.AddSingleton<IComicCollectionManagerService, ComicCollectionManagerService>();
-            services.AddSingleton<IComicCollectionManagerRepository, ComicCollectionManagerRepository>();
+            services.AddSingleton<IComicCollectionManagerRepository, ComicCollectionMongoDBRepository>();
             services.AddMvc();
         }
 
