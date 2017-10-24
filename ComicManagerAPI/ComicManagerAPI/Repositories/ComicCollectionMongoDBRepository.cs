@@ -75,6 +75,12 @@ namespace ComicManagerAPI.Repositories
             return comicsFound;
         }
 
+        public List<Comic> GetComicCollection(string userName)
+        {
+            var userCollection = GetUserCollection(userName);
+            return userCollection.comicCollection;
+        }
+
 
         private UserComicCollection GetUserCollection(string userName)
         {

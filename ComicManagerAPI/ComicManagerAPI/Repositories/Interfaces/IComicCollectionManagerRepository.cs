@@ -12,5 +12,6 @@ namespace ComicManagerAPI.Repositories.Interfaces
         List<Comic> RemoveComicFromCollection(Comic comicToRemove, string userName);
         List<Comic> UpdateComicInCollection(Comic originalComic, Comic newComic, string userName);
         List<Comic> SearchComicCollection(string name, int issue_number, string userName);
+        List<Comic> GetComicCollection(string userName);
     }
 }

@@ -80,5 +80,15 @@ namespace ComicManagerAPI.Controllers
             var comics = _collectionManagerService.SearchComicCollection(name, issue_number, username);
             return Ok(comics);
         }
+
+        [Route("getcomiccollection")]
+        [HttpGet("{username}")]
+        [ProducesResponseType(typeof(IEnumerable<Comic>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetComicCollection(string username)
+        {
+            var comics = _collectionManagerService.GetComicCollection(username);
+            return Ok(comics);
+        }
     }
 }

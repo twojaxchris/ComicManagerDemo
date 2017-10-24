@@ -10,6 +10,7 @@ namespace ComicManagerAPI.Models
 {
     public class Comic
     {
+        [JsonIgnore]
         public ObjectId Id { get; set; }
 
         //TODO: set auto-incrementing primary key for comics

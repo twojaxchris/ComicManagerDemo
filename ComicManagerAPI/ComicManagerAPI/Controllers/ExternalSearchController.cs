@@ -48,7 +48,7 @@ namespace ComicManagerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> SearchPublishers(string name)
         {
-            var publishers = await _comicService.SearchSeries(name);
+            var publishers = await _comicService.SearchPublishers(name);
             return Ok(publishers);
         }
     }

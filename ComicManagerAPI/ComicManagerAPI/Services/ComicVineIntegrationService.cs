@@ -81,7 +81,7 @@ namespace ComicManagerAPI.Services
                 {
                     name = result.name,
                     url = result.site_detail_url,
-                    imageUrl = result.site_detail_url
+                    imageUrl = result.image.medium_url
                 });
             }
 

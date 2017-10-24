@@ -36,5 +36,10 @@ namespace ComicManagerAPI.Services
         {
             return _repo.SearchComicCollection(name, issue_number, userName);
         }
+
+        public List<Comic> GetComicCollection(string username)
+        {
+            return _repo.GetComicCollection(username);
+        }
     }
 }
