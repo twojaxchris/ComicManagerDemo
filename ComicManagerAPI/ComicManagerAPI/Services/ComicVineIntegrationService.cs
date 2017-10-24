@@ -1,6 +1,8 @@
 ﻿using ComicManagerAPI.Models;
 using ComicManagerAPI.Models.ComicVine;
 using ComicManagerAPI.Models.ComicVine.Issue;
+using ComicManagerAPI.Models.ComicVine.Publisher;
+using ComicManagerAPI.Models.ComicVine.Series;
 using ComicManagerAPI.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -32,13 +34,84 @@ namespace ComicManagerAPI.Services
         public async Task<List<Comic>> SearchIssues(string name, int issue_number)
         {
             string issueURL = $"issues/?api_key={ _key}&format=json";
-            string filterUrl = CreateIssueFilterUrl(name, issue_number);
-            string finalUrl = apiURL + issueURL + filterUrl;
+            string filterURL = CreateFilterFromNameAndIssueNumber(name, issue_number);
+            string finalUrl = apiURL + issueURL + filterURL;
 
             string response = await CallComicVineAPI(finalUrl);
             var rootResult = JsonConvert.DeserializeObject<IssueResponse>(response);
 
             return CreateComicObjectsFromIssueResults(rootResult.results);
+        }
+
+        public async Task<List<Series>> SearchSeries(string name)
+        {
+            string seriesURL = $"series_list/?api_key={ _key}&format=json";
+            string filterURL = CreateFilterFromName(name);
+            string finalUrl = apiURL + seriesURL + filterURL;
+
+            string response = await CallComicVineAPI(finalUrl);
+            var rootResult = JsonConvert.DeserializeObject<SeriesResponse>(response);
+
+            return CreateSeriesFromSeriesResults(rootResult.results);
+        }
+
+        public async Task<List<Publisher>> SearchPublishers(string name)
+        {
+            string publishersURL = $"publishers/?api_key={ _key}&format=json";
+            string filterURL = CreateFilterFromName(name);
+            string finalUrl = apiURL + publishersURL + filterURL;
+
+            string response = await CallComicVineAPI(finalUrl);
+            var rootResult = JsonConvert.DeserializeObject<PublisherResponse>(response);
+
+            return CreatePublishersFromPublisherResults(rootResult.results);
+        }
+
+        private List<Publisher> CreatePublishersFromPublisherResults(List<PublisherResult> results)
+        {
+            List<Publisher> publishers = new List<Publisher>();
+
+            foreach (PublisherResult result in results)
+            {
+                publishers.Add(new Publisher
+                {
+                    name = result.name,
+                    url = result.site_detail_url,
+                    imageUrl = result.site_detail_url
+                });
+            }
+
+            return publishers;
+        }
+
+        private List<Series> CreateSeriesFromSeriesResults(List<SeriesResult> results)
+        {
+            List<Series> series = new List<Series>();
+
+            foreach (SeriesResult result in results)
+            {
+                series.Add(new Series
+                {
+                    name = result.name,
+                    startYear = result.start_year,
+                    url = result.site_detail_url,
+                    imageUrl = result.site_detail_url,
+                    publisherName = (result.publisher != null) ? result.publisher.name : String.Empty
+                });
+            }
+
+            return series;
+        }
+
+        private string CreateFilterFromName(string name)
+        {
+
+            string filterString = "&filter=";
+            string nameFilter = !String.IsNullOrEmpty(name)
+                                        ? $"{filterString}name:{name}"
+                                        : String.Empty;
+
+            return nameFilter;
         }
 
 
@@ -65,7 +138,7 @@ namespace ComicManagerAPI.Services
                 throw new Exception("The API Key you are trying to use it malformed and contained unsupported characters. Please check it and try again");
         }
 
-        private string CreateIssueFilterUrl(string name, int issue_number)
+        private string CreateFilterFromNameAndIssueNumber(string name, int issue_number)
         {
             string filterString = "&filter=";
             string nameFilter = !String.IsNullOrEmpty(name) 
@@ -111,9 +184,9 @@ namespace ComicManagerAPI.Services
                 {
                     issueNumber = result.issue_number,
                     coverDate = result.cover_date,
-                    imageURL = result.image.medium_url,
-                    title = result.volume.name,
-                    url = result.volume.site_detail_url
+                    imageURL = (result.image != null) ? result.image.medium_url : String.Empty,
+                    title = (result.volume != null) ? result.volume.name : String.Empty,
+                    url = (result.volume != null) ? result.volume.site_detail_url : String.Empty
                 });
             }
 

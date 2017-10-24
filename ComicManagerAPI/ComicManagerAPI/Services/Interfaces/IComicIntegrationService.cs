@@ -10,5 +10,7 @@ namespace ComicManagerAPI.Services.Interfaces
     public interface IComicIntegrationService
     {
         Task<List<Comic>> SearchIssues(string name, int issue_number);
+        Task<List<Series>> SearchSeries(string name);
+        Task<List<Publisher>> SearchPublishers(string name);
     }
 }
