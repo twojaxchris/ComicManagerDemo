@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,9 +8,14 @@ namespace ComicManagerAPI.Models
 {
     public class PostBody
     {
-        public Comic comic;
-        public Comic updatedComic;
-        public string userName;
+        [JsonProperty("comic")]
+        public Comic comic { get; set; }
+
+        [JsonProperty("updatedComic")]
+        public Comic updatedComic { get; set; }
+
+        [JsonProperty("userName")]
+        public string userName { get; set; }
     }
 }
 
